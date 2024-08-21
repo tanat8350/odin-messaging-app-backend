@@ -5,13 +5,13 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 require('dotenv').config();
 
-const User = require('../models/user');
+const prisma = require('./prisma');
 
 passport.use(
   'local',
   new LocalStrategy(async (username, password, done) => {
     try {
-      const user = await User.findOne({ username: username });
+      const user = await prisma.user.findUnique({ where: { username } });
       if (!user) {
         return done(null, false, { message: 'Incorrect username' });
       }
@@ -33,7 +33,9 @@ const opts = {
 passport.use(
   new JwtStrategy(opts, async function (jwt_payload, done) {
     try {
-      const user = await User.findOne({ _id: jwt_payload.id });
+      const user = await prisma.user.findUnique({
+        where: { id: jwt_payload.id },
+      });
       if (user) {
         return done(null, user);
       } else {
@@ -44,17 +46,5 @@ passport.use(
     }
   })
 );
-
-// passport.verifyToken = (req, res, next) => {
-//   const bearerHeader = req.headers("authorization");
-//   if (typeof bearerHeader !== "undefined") {
-//     const bearer = bearerHeader.split(" ");
-//     const bearerToken = bearer[1];
-//     req.token = bearerToken;
-//     next();
-//   } else {
-//     res.status(400);
-//   }
-// };
 
 module.exports = passport;

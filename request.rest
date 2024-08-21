@@ -1,0 +1,23 @@
+# var
+@baseUrl = http://localhost:3000
+
+###
+GET {{baseUrl}}
+
+### signup
+POST {{baseUrl}}/signup
+Content-Type: application/json
+
+{
+  "username": "a",
+  "password": "a"
+}
+
+### login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "username": "a",
+  "password": "a"
+}

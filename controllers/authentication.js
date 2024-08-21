@@ -59,7 +59,7 @@ exports.postLogin = [
     } else {
       passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err) {
-          return res.status(500).json({ error: [{ msg: error }] });
+          return res.status(500).json({ error: [{ msg: err }] });
         }
         if (!user) {
           return res.status(400).json({ error: [{ msg: info.message }] });
