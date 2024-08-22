@@ -1,5 +1,7 @@
 # var
 @baseUrl = http://localhost:3000
+@user1 = { "username": "a", "password": "a" }
+@user2 = { "username": "b", "password": "b" }
 
 ###
 GET {{baseUrl}}
@@ -8,16 +10,26 @@ GET {{baseUrl}}
 POST {{baseUrl}}/signup
 Content-Type: application/json
 
-{
-  "username": "a",
-  "password": "a"
-}
+{{user2}}
 
 ### login
 POST {{baseUrl}}/login
 Content-Type: application/json
 
+{{user2}}
+
+# section user route
+### get users
+GET {{baseUrl}}/user
+
+### get user message
+GET {{baseUrl}}/user/1/2
+
+### post send message
+POST {{baseUrl}}/user/1/2
+Content-Type: application/json
+
+# to note 'no , at last end'
 {
-  "username": "a",
-  "password": "a"
+  "message": "msg 3"
 }

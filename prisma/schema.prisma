@@ -17,4 +17,16 @@ model User {
   id Int @id @default(autoincrement())
   username String @unique @db.VarChar(255)
   password String @db.VarChar(255)
+  sentMessage Message[] @relation("SentMessage")
+  receivedMessage Message[] @relation("ReceiveMessage")
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  message String
+  senderid Int
+  sender User @relation("SentMessage", fields: [senderid],references: [id])
+  receiverid Int
+  receiver User @relation("ReceiveMessage", fields: [receiverid],references: [id])
 }
