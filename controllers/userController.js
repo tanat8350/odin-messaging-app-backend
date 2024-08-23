@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 
 const prisma = require('../configs/prisma');
+const multer = require('../configs/multer');
 
 module.exports = {
   getUsers: asyncHandler(async (req, res) => {
@@ -53,19 +54,28 @@ module.exports = {
     res.json(messages);
   }),
 
-  postSendMessage: asyncHandler(async (req, res) => {
-    const message = await prisma.message.create({
-      data: {
-        message: req.body.message,
+  postSendMessage: [
+    multer.single('image'),
+    asyncHandler(async (req, res) => {
+      const data = {
         senderid: +req.params.id,
         receiverid: +req.params.receiverid,
-      },
-    });
-    if (!message) {
-      return res
-        .status(400)
-        .json({ errors: [{ msg: 'fail to send a message' }] });
-    }
-    res.json({ success: true });
-  }),
+      };
+      if (req.file) {
+        data.message = req.file.filename;
+        data.image = true;
+      } else {
+        data.message = req.body.message;
+      }
+      const message = await prisma.message.create({
+        data: data,
+      });
+      if (!message) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'fail to send a message' }] });
+      }
+      res.json({ success: true });
+    }),
+  ],
 };
