@@ -40,6 +40,7 @@ exports.postSignup = [
         data: {
           username: req.body.username,
           password: hash,
+          displayName: req.body.username,
         },
       });
       if (!created) {

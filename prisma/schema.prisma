@@ -17,6 +17,7 @@ model User {
   id Int @id @default(autoincrement())
   username String @unique @db.VarChar(255)
   password String @db.VarChar(255)
+  displayName String @db.VarChar(255)
   sentMessage Message[] @relation("SentMessage")
   receivedMessage Message[] @relation("ReceiveMessage")
 }

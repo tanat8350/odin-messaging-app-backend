@@ -22,6 +22,7 @@ module.exports = {
       select: {
         id: true,
         username: true,
+        displayName: true,
       },
     });
     res.json(users);
