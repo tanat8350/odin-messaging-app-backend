@@ -13,12 +13,41 @@ module.exports = {
     res.json(users);
   }),
 
+  getOthers: asyncHandler(async (req, res) => {
+    const users = await prisma.user.findMany({
+      where: {
+        id: { not: +req.params.id },
+      },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+    res.json(users);
+  }),
+
   getUserMessage: asyncHandler(async (req, res) => {
     const messages = await prisma.message.findMany({
-      orderBy: { timestamp: 'desc' },
+      orderBy: { timestamp: 'asc' },
       where: {
         senderid: +req.params.id,
         receiverid: +req.params.receiverid,
+      },
+      include: {
+        senderid: false,
+        receiverid: false,
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
       },
     });
     res.json(messages);
