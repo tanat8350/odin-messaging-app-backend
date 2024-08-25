@@ -2,6 +2,7 @@
 @baseUrl = http://localhost:3000
 @user1 = { "username": "a", "password": "a" }
 @user2 = { "username": "b", "password": "b" }
+@user3 = { "username": "c", "password": "c" }
 
 ###
 GET {{baseUrl}}
@@ -11,6 +12,12 @@ POST {{baseUrl}}/signup
 Content-Type: application/json
 
 {{user2}}
+
+### signup
+POST {{baseUrl}}/signup
+Content-Type: application/json
+
+{{user3}}
 
 ### login
 POST {{baseUrl}}/login
@@ -32,4 +39,23 @@ Content-Type: application/json
 # to note 'no , at last end'
 {
   "message": "msg 3"
+}
+
+### get user
+GET {{baseUrl}}/user/1 HTTP/1.1
+
+### delete add friend
+POST  {{baseUrl}}/user/1/friend HTTP/1.1
+Content-Type: application/json
+
+{
+  "friendId": 3
+}
+
+### delete remove friend
+DELETE {{baseUrl}}/user/1/friend
+Content-Type: application/json
+
+{
+  "friendId": 3
 }

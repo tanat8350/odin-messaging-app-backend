@@ -14,6 +14,23 @@ module.exports = {
     res.json(users);
   }),
 
+  getUser: asyncHandler(async (req, res) => {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: +req.params.id,
+      },
+      include: {
+        friends: true,
+        friendOf: true,
+      },
+    });
+    if (!user) {
+      return res.status(500).json({ error: 'cannot find user' });
+    }
+    const { password, ...noPassword } = user;
+    res.json(noPassword);
+  }),
+
   getOthers: asyncHandler(async (req, res) => {
     const users = await prisma.user.findMany({
       where: {
@@ -42,6 +59,45 @@ module.exports = {
     }
     const { password, ...noPassword } = updated;
     res.json(noPassword);
+  }),
+
+  postAddFriend: asyncHandler(async (req, res) => {
+    const updated = await prisma.user.update({
+      where: {
+        id: +req.params.id,
+      },
+      data: {
+        friends: {
+          connect: {
+            id: +req.body.friendId,
+          },
+        },
+      },
+    });
+    if (!updated) {
+      return res.status(500).json({ error: 'Failed to add friend' });
+    }
+    const { password, ...noPassword } = updated;
+    res.json(noPassword);
+  }),
+
+  deleteRemoveFriend: asyncHandler(async (req, res) => {
+    const updated = await prisma.user.update({
+      where: {
+        id: +req.params.id,
+      },
+      data: {
+        friends: {
+          disconnect: {
+            id: +req.body.friendId,
+          },
+        },
+      },
+    });
+    if (!updated) {
+      return res.status(500).json({ error: 'Failed to remove friend' });
+    }
+    res.json(updated);
   }),
 
   getUserMessage: asyncHandler(async (req, res) => {
