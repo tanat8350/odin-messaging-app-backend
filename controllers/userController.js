@@ -3,6 +3,8 @@ const asyncHandler = require('express-async-handler');
 const prisma = require('../configs/prisma');
 const multer = require('../configs/multer');
 
+const CustomError = require('../utils/customError');
+
 module.exports = {
   getUsers: asyncHandler(async (req, res) => {
     const users = await prisma.user.findMany({
@@ -25,7 +27,7 @@ module.exports = {
       },
     });
     if (!user) {
-      return res.status(500).json({ error: 'cannot find user' });
+      throw new CustomError('cannot find user', 404);
     }
     const { password, ...noPassword } = user;
     res.json(noPassword);
@@ -55,7 +57,7 @@ module.exports = {
       },
     });
     if (!updated) {
-      return res.status(500).json({ error: 'Failed to update user' });
+      throw new CustomError('fail to update user', 500);
     }
     const { password, ...noPassword } = updated;
     res.json(noPassword);
@@ -75,7 +77,7 @@ module.exports = {
       },
     });
     if (!updated) {
-      return res.status(500).json({ error: 'Failed to add friend' });
+      throw new CustomError('fail to add friend', 500);
     }
     const { password, ...noPassword } = updated;
     res.json(noPassword);
@@ -95,7 +97,7 @@ module.exports = {
       },
     });
     if (!updated) {
-      return res.status(500).json({ error: 'Failed to remove friend' });
+      throw new CustomError('fail to remove friend', 500);
     }
     res.json(updated);
   }),
@@ -144,9 +146,7 @@ module.exports = {
         data: data,
       });
       if (!message) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'fail to send a message' }] });
+        throw new CustomError('fail to send a message', 500);
       }
       res.json({ success: true });
     }),

@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ### get user
-GET {{baseUrl}}/user/1 HTTP/1.1
+GET {{baseUrl}}/user/4 HTTP/1.1
 
 ### delete add friend
 POST  {{baseUrl}}/user/1/friend HTTP/1.1
