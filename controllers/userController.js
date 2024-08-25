@@ -28,6 +28,22 @@ module.exports = {
     res.json(users);
   }),
 
+  putUpdateUser: asyncHandler(async (req, res) => {
+    const updated = await prisma.user.update({
+      where: {
+        id: +req.params.id,
+      },
+      data: {
+        displayName: req.body.displayName,
+      },
+    });
+    if (!updated) {
+      return res.status(500).json({ error: 'Failed to update user' });
+    }
+    const { password, ...noPassword } = updated;
+    res.json(noPassword);
+  }),
+
   getUserMessage: asyncHandler(async (req, res) => {
     const messages = await prisma.message.findMany({
       orderBy: { timestamp: 'asc' },
