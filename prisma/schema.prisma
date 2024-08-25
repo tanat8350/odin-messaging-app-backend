@@ -32,8 +32,8 @@ model Message {
   message String
   senderid Int
   sender User @relation("SentMessage", fields: [senderid],references: [id])
-  receiverid Int
-  receiver User @relation("ReceiveMessage", fields: [receiverid],references: [id])
+  recipientid Int
+  recipient User @relation("ReceiveMessage", fields: [recipientid],references: [id])
 }
 
 model groupChat {

@@ -108,18 +108,18 @@ module.exports = {
       orderBy: { timestamp: 'asc' },
       where: {
         senderid: +req.params.id,
-        receiverid: +req.params.receiverid,
+        recipientid: +req.params.recipientid,
       },
       include: {
         senderid: false,
-        receiverid: false,
+        recipientid: false,
         sender: {
           select: {
             id: true,
             username: true,
           },
         },
-        receiver: {
+        recipient: {
           select: {
             id: true,
             username: true,
@@ -135,7 +135,7 @@ module.exports = {
     asyncHandler(async (req, res) => {
       const data = {
         senderid: +req.params.id,
-        receiverid: +req.params.receiverid,
+        recipientid: +req.params.recipientid,
       };
       if (req.file) {
         data.message = req.file.filename;

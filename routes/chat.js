@@ -3,8 +3,8 @@ const router = express.Router();
 
 const chatController = require('../controllers/chatController');
 
-router.get('/:id/:receiverid', chatController.getUserMessage);
-router.post('/:id/:receiverid', chatController.postSendMessage);
+router.get('/:id/:recipientid', chatController.getUserMessage);
+router.post('/:id/:recipientid', chatController.postSendMessage);
 
 // group chat
 router.post('/group', chatController.postCreateGroupChat);
