@@ -10,11 +10,13 @@ app.use(express.static('public'));
 
 const authenticationRouter = require('./routes/authentication');
 const userRouter = require('./routes/user');
+const chatRouter = require('./routes/chat');
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 app.use('/', authenticationRouter);
 app.use('/user', userRouter);
+app.use('/chat', chatRouter);
 
 app.use((error, req, res, next) => {
   error.statusCode = error.statusCode || 500;
