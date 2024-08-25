@@ -22,6 +22,7 @@ model User {
   receivedMessage Message[] @relation("ReceiveMessage")
   friends User[] @relation("friends")
   friendOf User[] @relation("friends")
+  groupChats groupChat[]
 }
 
 model Message {
@@ -33,4 +34,18 @@ model Message {
   sender User @relation("SentMessage", fields: [senderid],references: [id])
   receiverid Int
   receiver User @relation("ReceiveMessage", fields: [receiverid],references: [id])
+}
+
+model groupChat {
+  id Int @id @default(autoincrement())
+  users User[]
+  messsages groupChatMessage[]
+}
+
+model groupChatMessage {
+  id Int @id @default(autoincrement())
+  groupid Int
+  group groupChat @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  timestamp DateTime @default(now())
+  message String
 }

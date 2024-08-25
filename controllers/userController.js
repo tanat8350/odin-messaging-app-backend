@@ -24,6 +24,7 @@ module.exports = {
       include: {
         friends: true,
         friendOf: true,
+        groupChats: true,
       },
     });
     if (!user) {
