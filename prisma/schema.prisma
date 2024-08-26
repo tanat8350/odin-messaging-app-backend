@@ -24,7 +24,7 @@ model User {
   friendOf User[] @relation("friends")
   groupChats groupChat[]
   groupChatMessages groupChatMessage[]
-  // to add online lastrequest
+  lastRequest DateTime @default(now())
 }
 
 model Message {

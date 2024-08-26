@@ -7,6 +7,8 @@ router.get('/', userController.getUsers);
 router.get('/:id', userController.getUser);
 router.put('/:id', userController.putUpdateUser);
 
+router.put('/:id/request', userController.putUpdateUserLastRequest);
+
 router.get('/:id/others', userController.getOthers);
 
 router.post('/:id/friend', userController.postAddFriend);

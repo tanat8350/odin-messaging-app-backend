@@ -48,6 +48,18 @@ module.exports = {
     res.json(users);
   }),
 
+  putUpdateUserLastRequest: asyncHandler(async (req, res, next) => {
+    const updated = await prisma.user.update({
+      where: {
+        id: +req.params.id,
+      },
+      data: {
+        lastRequest: new Date(),
+      },
+    });
+    res.end();
+  }),
+
   putUpdateUser: asyncHandler(async (req, res) => {
     const updated = await prisma.user.update({
       where: {
