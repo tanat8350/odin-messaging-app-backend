@@ -14,7 +14,4 @@ router.get('/:id/others', userController.getOthers);
 router.post('/:id/friend', userController.postAddFriend);
 router.delete('/:id/friend', userController.deleteRemoveFriend);
 
-router.get('/:id/:recipientid', userController.getUserMessage);
-router.post('/:id/:recipientid', userController.postSendMessage);
-
 module.exports = router;
