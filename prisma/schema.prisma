@@ -23,6 +23,8 @@ model User {
   friends User[] @relation("friends")
   friendOf User[] @relation("friends")
   groupChats groupChat[]
+  groupChatMessages groupChatMessage[]
+  // to add online lastrequest
 }
 
 model Message {
@@ -39,11 +41,13 @@ model Message {
 model groupChat {
   id Int @id @default(autoincrement())
   users User[]
-  messsages groupChatMessage[]
+  messages groupChatMessage[]
 }
 
 model groupChatMessage {
   id Int @id @default(autoincrement())
+  senderid Int
+  sender User @relation(fields: [senderid], references: [id], onDelete: Cascade)
   groupid Int
   group groupChat @relation(fields: [groupid], references: [id], onDelete: Cascade)
   timestamp DateTime @default(now())

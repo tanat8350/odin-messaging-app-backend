@@ -75,7 +75,7 @@ module.exports = {
       data: {
         users: {
           connect: {
-            id: +req.params.id,
+            id: +req.body.id,
           },
         },
       },
@@ -83,7 +83,27 @@ module.exports = {
     if (!group) {
       throw new CustomError('fail to create a group chat', 500);
     }
-    res.json({ success: true });
+    res.json({ ...group, success: true });
+  }),
+
+  getGetGroupChat: asyncHandler(async (req, res, next) => {
+    const group = await prisma.groupChat.findUnique({
+      where: {
+        id: +req.params.id,
+      },
+      include: {
+        users: true,
+        messages: {
+          include: {
+            sender: true,
+          },
+        },
+      },
+    });
+    if (!group) {
+      throw new CustomError('cannot find group chat', 404);
+    }
+    res.json(group);
   }),
 
   deleteDeleteGroupChat: asyncHandler(async (req, res, next) => {
@@ -102,6 +122,7 @@ module.exports = {
     const message = await prisma.groupChatMessage.create({
       data: {
         groupid: +req.params.id,
+        senderid: +req.body.senderid,
         message: req.body.message,
       },
     });
@@ -119,7 +140,7 @@ module.exports = {
       data: {
         users: {
           connect: {
-            id: +req.body.userId,
+            id: +req.body.userid,
           },
         },
       },
@@ -127,6 +148,7 @@ module.exports = {
     if (!updated) {
       throw new CustomError('fail to add user to group chat', 500);
     }
+    res.json({ success: true });
   }),
 
   deleteRemoveUserGroupChat: asyncHandler(async (req, res, next) => {
@@ -137,7 +159,7 @@ module.exports = {
       data: {
         users: {
           disconnect: {
-            id: +req.body.userId,
+            id: +req.body.userid,
           },
         },
       },
@@ -145,5 +167,6 @@ module.exports = {
     if (!updated) {
       throw new CustomError('fail to remove user to group chat', 500);
     }
+    res.json({ success: true });
   }),
 };

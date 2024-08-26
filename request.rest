@@ -59,3 +59,31 @@ Content-Type: application/json
 {
   "friendId": 3
 }
+
+### group chat
+GET {{baseUrl}}/chat/group/1 HTTP/1.1
+
+### group add user
+PUT {{baseUrl}}/chat/group/3/user HTTP/1.1
+Content-Type: application/json
+
+{
+  "userid": 2
+}
+
+### group remove user
+DELETE  {{baseUrl}}/chat/group/2/user HTTP/1.1
+Content-Type: application/json
+
+{
+  "userid": 2
+}
+
+### group message
+POST {{baseUrl}}/chat/group/3/message HTTP/1.1
+Content-Type: application/json
+
+{
+  "senderid": 2,
+  "message": "test"
+}
