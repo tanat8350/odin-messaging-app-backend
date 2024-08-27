@@ -23,5 +23,10 @@ router.delete(
 
 router.get('/:id/:recipientid', verifyToken, chatController.getUserMessage);
 router.post('/:id/:recipientid', verifyToken, chatController.postSendMessage);
+router.post(
+  '/:id/:recipientid/image',
+  verifyToken,
+  chatController.postSendMessageImage
+);
 
 module.exports = router;

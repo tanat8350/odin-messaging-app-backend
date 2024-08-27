@@ -4,6 +4,22 @@ const prisma = require('../configs/prisma');
 const multer = require('../configs/multer');
 
 const CustomError = require('../utils/customError');
+const { body, validationResult } = require('express-validator');
+
+const validateMessage = [
+  body('message')
+    .isLength({ min: 1 })
+    .withMessage('Message is required')
+    .escape(),
+];
+
+const validateImage = [
+  body('image')
+    .custom((value, { req }) =>
+      ['image/jpeg', 'image/jpg', 'image/png'].includes(req.file.mimetype)
+    )
+    .withMessage('Only jpeg, jpg and png are allowed'),
+];
 
 module.exports = {
   getUserMessage: asyncHandler(async (req, res) => {
@@ -34,23 +50,44 @@ module.exports = {
   }),
 
   postSendMessage: [
-    multer.single('image'),
+    validateMessage,
     asyncHandler(async (req, res) => {
-      const data = {
-        senderid: +req.params.id,
-        recipientid: +req.params.recipientid,
-      };
-      if (req.file) {
-        data.message = req.file.filename;
-        data.image = true;
-      } else {
-        data.message = req.body.message;
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.json({ success: false, errors: errors.array() });
       }
       const message = await prisma.message.create({
-        data: data,
+        data: {
+          senderid: +req.params.id,
+          recipientid: +req.params.recipientid,
+          message: req.body.message,
+        },
       });
       if (!message) {
         throw new CustomError('fail to send a message', 500);
+      }
+      res.json({ success: true });
+    }),
+  ],
+
+  postSendMessageImage: [
+    multer.single('image'),
+    validateImage,
+    asyncHandler(async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.json({ success: false, errors: errors.array() });
+      }
+      const message = await prisma.message.create({
+        data: {
+          senderid: +req.params.id,
+          recipientid: +req.params.recipientid,
+          message: req.file.filename,
+          image: true,
+        },
+      });
+      if (!message) {
+        throw new CustomError('fail to send an image', 500);
       }
       res.json({ success: true });
     }),
@@ -118,19 +155,26 @@ module.exports = {
     res.json({ success: true });
   }),
 
-  postSendMessageGroupChat: asyncHandler(async (req, res) => {
-    const message = await prisma.groupChatMessage.create({
-      data: {
-        groupid: +req.params.id,
-        senderid: +req.body.senderid,
-        message: req.body.message,
-      },
-    });
-    if (!message) {
-      throw new CustomError('fail to send a message', 500);
-    }
-    res.json({ success: true });
-  }),
+  postSendMessageGroupChat: [
+    validateMessage,
+    asyncHandler(async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.json({ success: false, errors: errors.array() });
+      }
+      const message = await prisma.groupChatMessage.create({
+        data: {
+          groupid: +req.params.id,
+          senderid: +req.body.senderid,
+          message: req.body.message,
+        },
+      });
+      if (!message) {
+        throw new CustomError('fail to send a message', 500);
+      }
+      res.json({ success: true });
+    }),
+  ],
 
   putAddUserGroupChat: asyncHandler(async (req, res, next) => {
     const updated = await prisma.groupChat.update({
