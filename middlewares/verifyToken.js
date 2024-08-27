@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+// if Bearer "<token>", have to remove ""
 const verifyToken = (req, res, next) => {
   const bearerHeader = req.header('authorization');
   if (typeof bearerHeader !== 'undefined') {
     const bearerToken = bearerHeader.split(' ')[1];
     jwt.verify(bearerToken, process.env.JWT_SECRET, (err, authData) => {
+      console.log(err);
       if (err) {
         res.sendStatus(403);
       }

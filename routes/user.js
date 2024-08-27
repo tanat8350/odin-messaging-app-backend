@@ -1,17 +1,23 @@
 const express = require('express');
 const router = express.Router();
 
+const verifyToken = require('../middlewares/verifyToken');
+
 const userController = require('../controllers/userController');
 
-router.get('/', userController.getUsers);
-router.get('/:id', userController.getUser);
-router.put('/:id', userController.putUpdateUser);
+router.get('/', verifyToken, userController.getUsers);
+router.get('/:id', verifyToken, userController.getUser);
+router.put('/:id', verifyToken, userController.putUpdateUser);
 
-router.put('/:id/request', userController.putUpdateUserLastRequest);
+router.put(
+  '/:id/request',
+  verifyToken,
+  userController.putUpdateUserLastRequest
+);
 
-router.get('/:id/others', userController.getOthers);
+router.get('/:id/others', verifyToken, userController.getOthers);
 
-router.post('/:id/friend', userController.postAddFriend);
-router.delete('/:id/friend', userController.deleteRemoveFriend);
+router.post('/:id/friend', verifyToken, userController.postAddFriend);
+router.delete('/:id/friend', verifyToken, userController.deleteRemoveFriend);
 
 module.exports = router;
