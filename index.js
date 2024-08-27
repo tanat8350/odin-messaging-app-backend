@@ -3,6 +3,17 @@ const cors = require('cors');
 
 const app = express();
 
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 60000, // 1 min
+  max: 30,
+});
+app.use(limiter);
+const compression = require('compression');
+app.use(compression());
+const helmet = require('helmet');
+app.use(helmet());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
