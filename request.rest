@@ -41,6 +41,14 @@ Content-Type: application/json
   "message": "msg 3"
 }
 
+### update user display name
+PUT {{baseUrl}}/user/1
+Content-Type: application/json
+
+{
+  "displayName": "aaa"
+}
+
 ### get user
 GET {{baseUrl}}/user/4 HTTP/1.1
 

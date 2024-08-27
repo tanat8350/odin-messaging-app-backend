@@ -4,6 +4,16 @@ const prisma = require('../configs/prisma');
 const multer = require('../configs/multer');
 
 const CustomError = require('../utils/customError');
+const { body, validationResult } = require('express-validator');
+
+const validateDisplayName = [
+  body('displayName')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Display name is required')
+    .matches(/^[a-z0-9 ]+$/i)
+    .withMessage('Only letters, numbers and spaces are allowed'),
+];
 
 module.exports = {
   getUsers: asyncHandler(async (req, res) => {
@@ -60,21 +70,28 @@ module.exports = {
     res.end();
   }),
 
-  putUpdateUser: asyncHandler(async (req, res) => {
-    const updated = await prisma.user.update({
-      where: {
-        id: +req.params.id,
-      },
-      data: {
-        displayName: req.body.displayName,
-      },
-    });
-    if (!updated) {
-      throw new CustomError('fail to update user', 500);
-    }
-    const { password, ...noPassword } = updated;
-    res.json(noPassword);
-  }),
+  putUpdateUser: [
+    validateDisplayName,
+    asyncHandler(async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.json({ success: false, errors: errors.array() });
+      }
+      const updated = await prisma.user.update({
+        where: {
+          id: +req.params.id,
+        },
+        data: {
+          displayName: req.body.displayName,
+        },
+      });
+      if (!updated) {
+        throw new CustomError('fail to update user', 500);
+      }
+      const { password, ...noPassword } = updated;
+      res.json({ success: true, ...noPassword });
+    }),
+  ],
 
   postAddFriend: asyncHandler(async (req, res) => {
     const updated = await prisma.user.update({
